@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../App';
 import { mockApi } from '../services/mockApi';
 import { UserRole } from '../types';
 import { GoogleIcon } from './icons';
 
-const Auth: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
+type AuthProps = {
+  mode?: 'login' | 'signup';
+  onModeChange?: (mode: 'login' | 'signup') => void;
+};
+
+const Auth: React.FC<AuthProps> = ({ mode = 'login', onModeChange }) => {
+  const [isLogin, setIsLogin] = useState(mode !== 'signup');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -13,6 +18,10 @@ const Auth: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+
+  useEffect(() => {
+    setIsLogin(mode !== 'signup');
+  }, [mode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +44,12 @@ const Auth: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const switchMode = () => {
+    const nextMode = isLogin ? 'signup' : 'login';
+    setIsLogin(!isLogin);
+    onModeChange?.(nextMode);
   };
   
   const handleGoogleLogin = async () => {
@@ -152,7 +167,7 @@ const Auth: React.FC = () => {
         
         <p className="text-sm text-center text-gray-600 dark:text-gray-400">
           {isLogin ? "Don't have an account?" : 'Already have an account?'}
-          <button onClick={() => setIsLogin(!isLogin)} className="font-medium text-indigo-600 hover:text-indigo-500 ml-1">
+          <button onClick={switchMode} className="font-medium text-indigo-600 hover:text-indigo-500 ml-1">
             {isLogin ? 'Sign up' : 'Sign in'}
           </button>
         </p>
