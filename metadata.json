@@ -1,0 +1,5 @@
+{
+  "name": "Copy of Tutor-Student Assignment Platform",
+  "description": "A platform where students can post assignments, tutors can bid on them, and admins can manage the platform. This is a frontend MVP implementation with a mock backend.",
+  "requestFramePermissions": []
+}
